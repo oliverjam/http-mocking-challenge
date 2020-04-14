@@ -26,12 +26,12 @@ Now if our code makes a request to `https://some-api.com/dogs/123` it'll receive
 
 ## Challenge
 
-This app tells you which of any two Pokémon is heavier. The `/pokemon/:name1/:name2` route takes two Pokémon names, requests their data from `https://pokeapi.co`, then compares their weights. It responds with a string like this: `onix outweighs pikachu by 204kg`.
+This app tells you which of any two Pokémon is heavier. The `/sumo/:name1/:name2` route takes two Pokémon names, requests their data from `https://pokeapi.co`, then compares their weights. It responds with a string like this: `onix outweighs pikachu by 204kg`.
 
 You need to write tests for it that don't actually hit the PokeAPI.
 
 1. Open `tests/server.test.js`
-1. Write a test for the `/pokemon/:name1/:name2` route
+1. Write a test for the `/sumo/:name1/:name2` route
    - Use `nock` to mock requests to the PokeAPI
    - Mock the Pokémon response objects
    - Check that the server still responds with the expected string
