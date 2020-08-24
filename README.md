@@ -4,11 +4,11 @@ This app relies on another API for some of its data. Unfortunately this makes te
 
 We also shouldn't be testing someone else's code: we want to _mock_ the responses to our network requests with realistic but ideal values, so we can focus on testing our own code.
 
-## `nock`
+## Server structure
 
-[`nock`](https://www.npmjs.com/package/nock) is a useful library for intercepting HTTP requests and sending fake responses. This means our code runs as normal and (as far as its concerned) gets totally legit network responses.
+In order to easily send fake requests to our server with Supertest we _create_ the server in a different file than where we start it. `server/server.js` is where we define our server with all its routes, then export it. We import this in `server/index.js` and call `server.listen(3000)` there.
 
-First create a mocking object for a domain:
+This means our tests can just import the server from `server.js` without starting it listening on a port.
 
 ```js
 const mocks = nock("https://some-api.com");
