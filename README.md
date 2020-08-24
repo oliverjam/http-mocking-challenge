@@ -42,10 +42,61 @@ onix outweighs pikachu by 204kg
 
 The server fetches weight information from pokeapi.co. We don't want to rely on this API for our tests, so we should _mock_ it.
 
-1. Open `tests/server.test.js`
-1. Write a test for the `/sumo/:name1/:name2` route
-   - Use `nock` to mock requests to the PokeAPI
-   - Mock the Pokémon response objects
-   - Check that the server still responds with the expected string
+First let's write a normal server test.
 
-You can see an example PokeAPI response here: https://pokeapi.co/api/v2/pokemon/onix.
+1. Open `tests/server.test.js`
+1. Write a test for the `/sumo/:name1/:name2` route using `supertest`
+1. Send a request with two Pokémon names and check you get the expected string response
+
+<details>
+<summary>Solution</summary>
+
+```js
+test("Compares pokemon weights", (t) => {
+  request(server)
+    .get("/sumo/pikachu/onix")
+    .expect(200)
+    .then((res) => {
+      t.equal(res.text, "onix outweighs pikachu by 204kg");
+      t.end();
+    });
+});
+```
+
+</details>
+
+Now you need to mock the requests the server is sending to https://pokeapi.co, but keep the test passing.
+
+1. Use `nock` to mock any requests the server makes to the PokéAPI
+1. Mock the Pokémon response objects
+1. Check that the server still responds with the expected string
+
+You can see an example of the real PokéAPI responses here: https://pokeapi.co/api/v2/pokemon/onix.
+
+**Hint**: an easy way to tell if your mock is working is to use made up values in the mocked response.
+
+<details>
+<summary>Solution</summary>
+
+```js
+test("Compares pokemon weights", (t) => {
+  // intercept all requests to pokeapi.co
+  const mocks = nock("https://pokeapi.co");
+  mocks
+    .get("/api/v2/pokemon/pikachu")
+    .reply(200, { name: "ron", weight: 6000000000 });
+  mocks
+    .get("/api/v2/pokemon/onix")
+    .reply(200, { name: "hilda", weight: 21000000 });
+
+  request(server)
+    .get("/sumo/pikachu/onix")
+    .expect(200)
+    .then((res) => {
+      t.equal(res.text, "ron outweighs hilda by 597900000kg");
+      t.end();
+    });
+});
+```
+
+</details>
